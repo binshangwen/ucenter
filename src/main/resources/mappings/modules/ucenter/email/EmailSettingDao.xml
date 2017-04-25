@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.framework.modules.ucenter.email.dao.EmailSettingDao">
+    
+	<sql id="emailSettingColumns">
+		a.id AS "id",
+		a.name AS "name",
+		a.email_name AS "emailName",
+		a.email_account AS "emailAccount",
+		a.email_secret AS "emailSecret",
+		a.stmp_host AS "stmpHost",
+		a.stmp_port AS "stmpPort",
+		a.register_model AS "registerModel",
+		a.reset_model AS "resetModel",
+		a.create_date AS "createDate",
+		a.create_by AS "createBy.id",
+		a.update_date AS "updateDate",
+		a.update_by AS "updateBy.id"
+	</sql>
+	
+	<sql id="emailSettingJoins">
+	</sql>
+	
+    
+	<select id="get" resultType="EmailSetting" >
+		SELECT 
+			<include refid="emailSettingColumns"/>
+		FROM email_setting a
+		<include refid="emailSettingJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="EmailSetting" >
+		SELECT 
+			<include refid="emailSettingColumns"/>
+		FROM email_setting a
+		<include refid="emailSettingJoins"/>
+		<where>
+			
+			<if test="name != null and name != ''">
+				AND a.name LIKE concat('%',#{name},'%')
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="EmailSetting" >
+		SELECT 
+			<include refid="emailSettingColumns"/>
+		FROM email_setting a
+		<include refid="emailSettingJoins"/>
+		<where>
+			
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO email_setting(
+			id,
+			name,
+			email_name,
+			email_account,
+			email_secret,
+			stmp_host,
+			stmp_port,
+			register_model,
+			reset_model,
+			create_date,
+			create_by,
+			update_date,
+			update_by
+		) VALUES (
+			#{id},
+			#{name},
+			#{emailName},
+			#{emailAccount},
+			#{emailSecret},
+			#{stmpHost},
+			#{stmpPort},
+			#{registerModel},
+			#{resetModel},
+			#{createDate},
+			#{createBy.id},
+			#{updateDate},
+			#{updateBy.id}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE email_setting SET 	
+			name = #{name},
+			email_name = #{emailName},
+			email_account = #{emailAccount},
+			email_secret = #{emailSecret},
+			stmp_host = #{stmpHost},
+			stmp_port = #{stmpPort},
+			register_model = #{registerModel},
+			reset_model = #{resetModel},
+			update_date = #{updateDate},
+			update_by = #{updateBy.id}
+		WHERE id = #{id}
+	</update>
+	
+	
+	<!--物理删除-->
+	<update id="delete">
+		DELETE FROM email_setting
+		WHERE id = #{id}
+	</update>
+	
+	<!--逻辑删除-->
+	<update id="deleteByLogic">
+		UPDATE email_setting SET 
+			del_flag = #{DEL_FLAG_DELETE}
+		WHERE id = #{id}
+	</update>
+	
+	
+	<!-- 根据实体名称和字段名称和字段值获取唯一记录 -->
+	<select id="findUniqueByProperty" resultType="EmailSetting" statementType="STATEMENT">
+		select * FROM email_setting  where ${propertyName} = '${value}'
+	</select>
+	
+</mapper>

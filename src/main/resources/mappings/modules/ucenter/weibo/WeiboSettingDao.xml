@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.framework.modules.ucenter.weibo.dao.WeiboSettingDao">
+    
+	<sql id="weiboSettingColumns">
+		a.id AS "id",
+		a.name AS "name",
+		a.appid AS "appid",
+		a.secret AS "secret",
+		a.get_token_url AS "getTokenUrl",
+		a.get_info_url AS "getInfoUrl",
+		a.create_date AS "createDate",
+		a.create_by AS "createBy.id",
+		a.update_date AS "updateDate",
+		a.update_by AS "updateBy.id"
+	</sql>
+	
+	<sql id="weiboSettingJoins">
+	</sql>
+	
+    
+	<select id="get" resultType="WeiboSetting" >
+		SELECT 
+			<include refid="weiboSettingColumns"/>
+		FROM weibo_setting a
+		<include refid="weiboSettingJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="WeiboSetting" >
+		SELECT 
+			<include refid="weiboSettingColumns"/>
+		FROM weibo_setting a
+		<include refid="weiboSettingJoins"/>
+		<where>
+			
+			<if test="name != null and name != ''">
+				AND a.name LIKE concat('%',#{name},'%')
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="WeiboSetting" >
+		SELECT 
+			<include refid="weiboSettingColumns"/>
+		FROM weibo_setting a
+		<include refid="weiboSettingJoins"/>
+		<where>
+			
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO weibo_setting(
+			id,
+			name,
+			appid,
+			secret,
+			get_token_url,
+			get_info_url,
+			create_date,
+			create_by,
+			update_date,
+			update_by
+		) VALUES (
+			#{id},
+			#{name},
+			#{appid},
+			#{secret},
+			#{getTokenUrl},
+			#{getInfoUrl},
+			#{createDate},
+			#{createBy.id},
+			#{updateDate},
+			#{updateBy.id}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE weibo_setting SET 	
+			name = #{name},
+			appid = #{appid},
+			secret = #{secret},
+			get_token_url = #{getTokenUrl},
+			get_info_url = #{getInfoUrl},
+			update_date = #{updateDate},
+			update_by = #{updateBy.id}
+		WHERE id = #{id}
+	</update>
+	
+	
+	<!--物理删除-->
+	<update id="delete">
+		DELETE FROM weibo_setting
+		WHERE id = #{id}
+	</update>
+	
+	<!--逻辑删除-->
+	<update id="deleteByLogic">
+		UPDATE weibo_setting SET 
+			del_flag = #{DEL_FLAG_DELETE}
+		WHERE id = #{id}
+	</update>
+	
+	
+	<!-- 根据实体名称和字段名称和字段值获取唯一记录 -->
+	<select id="findUniqueByProperty" resultType="WeiboSetting" statementType="STATEMENT">
+		select * FROM weibo_setting  where ${propertyName} = '${value}'
+	</select>
+	
+</mapper>

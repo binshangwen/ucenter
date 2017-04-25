@@ -1,0 +1,210 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.framework.modules.ucenter.user.dao.UserDataDao">
+    
+	<sql id="userDataColumns">
+		a.id AS "id",
+		a.user_name AS "userName",
+		a.passwd AS "passwd",
+		a.nick_name AS "nickName",
+		a.avatar_large AS "avatarLarge",
+		a.avatar_mid AS "avatarMid",
+		a.avatar_small AS "avatarSmall",
+		a.register_by AS "registerBy",
+		a.register_platform AS "registerPlatform",
+		a.register_ip AS "registerIp",
+		a.first_name AS "firstName",
+		a.last_name AS "lastName",
+		a.gender AS "gender",
+		a.age AS "age",
+		a.signature AS "signature",
+		a.blog AS "blog",
+		a.locale AS "locale",
+		a.verified AS "verified",
+		a.linked_wechat AS "linkedWechat",
+		a.wechat_openid AS "wechatOpenid",
+		a.linked_weibo AS "linkedWeibo",
+		a.weibo_openid AS "weiboOpenid",
+		a.linked_email AS "linkedEmail",
+		a.verified_email AS "verifiedEmail",
+		a.linked_qq AS "linkedQq",
+		a.linked_qq_platform AS "linkedQqPlatform",
+		a.qq_openid AS "qqOpenid",
+		a.create_date AS "createDate",
+		a.update_date AS "updateDate"
+	</sql>
+	
+	<sql id="userDataJoins">
+	</sql>
+	
+    
+	<select id="get" resultType="UserData" >
+		SELECT 
+			<include refid="userDataColumns"/>
+		FROM user_data a
+		<include refid="userDataJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="UserData" >
+		SELECT 
+			<include refid="userDataColumns"/>
+		FROM user_data a
+		<include refid="userDataJoins"/>
+		<where>
+			
+			<if test="userName != null and userName != ''">
+				AND a.user_name LIKE concat('%',#{userName},'%')
+			</if>
+			<if test="nickName != null and nickName != ''">
+				AND a.nick_name LIKE concat('%',#{nickName},'%')
+			</if>
+			<if test="registerBy != null and registerBy != ''">
+				AND a.register_by = #{registerBy}
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="UserData" >
+		SELECT 
+			<include refid="userDataColumns"/>
+		FROM user_data a
+		<include refid="userDataJoins"/>
+		<where>
+			
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO user_data(
+			id,
+			user_name,
+			passwd,
+			nick_name,
+			avatar_large,
+			avatar_mid,
+			avatar_small,
+			register_by,
+			register_platform,
+			register_ip,
+			first_name,
+			last_name,
+			gender,
+			age,
+			signature,
+			blog,
+			locale,
+			verified,
+			linked_wechat,
+			wechat_openid,
+			linked_weibo,
+			weibo_openid,
+			linked_email,
+			verified_email,
+			linked_qq,
+			linked_qq_platform,
+			qq_openid,
+			create_date,
+			update_date
+		) VALUES (
+			#{id},
+			#{userName},
+			#{passwd},
+			#{nickName},
+			#{avatarLarge},
+			#{avatarMid},
+			#{avatarSmall},
+			#{registerBy},
+			#{registerPlatform},
+			#{registerIp},
+			#{firstName},
+			#{lastName},
+			#{gender},
+			#{age},
+			#{signature},
+			#{blog},
+			#{locale},
+			#{verified},
+			#{linkedWechat},
+			#{wechatOpenid},
+			#{linkedWeibo},
+			#{weiboOpenid},
+			#{linkedEmail},
+			#{verifiedEmail},
+			#{linkedQq},
+			#{linkedQqPlatform},
+			#{qqOpenid},
+			#{createDate},
+			#{updateDate}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE user_data SET 	
+			user_name = #{userName},
+			passwd = #{passwd},
+			nick_name = #{nickName},
+			avatar_large = #{avatarLarge},
+			avatar_mid = #{avatarMid},
+			avatar_small = #{avatarSmall},
+			register_by = #{registerBy},
+			register_platform = #{registerPlatform},
+			register_ip = #{registerIp},
+			first_name = #{firstName},
+			last_name = #{lastName},
+			gender = #{gender},
+			age = #{age},
+			signature = #{signature},
+			blog = #{blog},
+			locale = #{locale},
+			verified = #{verified},
+			linked_wechat = #{linkedWechat},
+			wechat_openid = #{wechatOpenid},
+			linked_weibo = #{linkedWeibo},
+			weibo_openid = #{weiboOpenid},
+			linked_email = #{linkedEmail},
+			verified_email = #{verifiedEmail},
+			linked_qq = #{linkedQq},
+			linked_qq_platform = #{linkedQqPlatform},
+			qq_openid = #{qqOpenid},
+			update_date = #{updateDate}
+		WHERE id = #{id}
+	</update>
+	
+	
+	<!--物理删除-->
+	<update id="delete">
+		DELETE FROM user_data
+		WHERE id = #{id}
+	</update>
+	
+	<!--逻辑删除-->
+	<update id="deleteByLogic">
+		UPDATE user_data SET 
+			del_flag = #{DEL_FLAG_DELETE}
+		WHERE id = #{id}
+	</update>
+	
+	
+	<!-- 根据实体名称和字段名称和字段值获取唯一记录 -->
+	<select id="findUniqueByProperty" resultType="UserData" statementType="STATEMENT">
+		select * FROM user_data  where ${propertyName} = '${value}'
+	</select>
+	
+</mapper>

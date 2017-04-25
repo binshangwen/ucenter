@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.framework.modules.ucenter.weibouser.dao.WeiboUserDao">
+    
+	<sql id="weiboUserColumns">
+		a.id AS "id",
+		a.code AS "code",
+		a.sign_platform AS "signPlatform",
+		a.open_id AS "openId",
+		a.access_token AS "accessToken",
+		a.refresh_token AS "refreshToken",
+		a.avatar_large AS "avatarLarge",
+		a.avatar_mid AS "avatarMid",
+		a.avatar_small AS "avatarSmall",
+		a.nick_name AS "nickName",
+		a.gender AS "gender",
+		a.age AS "age",
+		a.signature AS "signature",
+		a.create_date AS "createDate",
+		a.create_by AS "createBy.id",
+		a.update_date AS "updateDate",
+		a.update_by AS "updateBy.id"
+	</sql>
+	
+	<sql id="weiboUserJoins">
+	</sql>
+	
+    
+	<select id="get" resultType="WeiboUser" >
+		SELECT 
+			<include refid="weiboUserColumns"/>
+		FROM weibo_user a
+		<include refid="weiboUserJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="WeiboUser" >
+		SELECT 
+			<include refid="weiboUserColumns"/>
+		FROM weibo_user a
+		<include refid="weiboUserJoins"/>
+		<where>
+			
+			<if test="nickName != null and nickName != ''">
+				AND a.nick_name LIKE concat('%',#{nickName},'%')
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="WeiboUser" >
+		SELECT 
+			<include refid="weiboUserColumns"/>
+		FROM weibo_user a
+		<include refid="weiboUserJoins"/>
+		<where>
+			
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO weibo_user(
+			id,
+			code,
+			sign_platform,
+			open_id,
+			access_token,
+			refresh_token,
+			avatar_large,
+			avatar_mid,
+			avatar_small,
+			nick_name,
+			gender,
+			age,
+			signature,
+			create_date,
+			create_by,
+			update_date,
+			update_by
+		) VALUES (
+			#{id},
+			#{code},
+			#{signPlatform},
+			#{openId},
+			#{accessToken},
+			#{refreshToken},
+			#{avatarLarge},
+			#{avatarMid},
+			#{avatarSmall},
+			#{nickName},
+			#{gender},
+			#{age},
+			#{signature},
+			#{createDate},
+			#{createBy.id},
+			#{updateDate},
+			#{updateBy.id}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE weibo_user SET 	
+			code = #{code},
+			sign_platform = #{signPlatform},
+			open_id = #{openId},
+			access_token = #{accessToken},
+			refresh_token = #{refreshToken},
+			avatar_large = #{avatarLarge},
+			avatar_mid = #{avatarMid},
+			avatar_small = #{avatarSmall},
+			nick_name = #{nickName},
+			gender = #{gender},
+			age = #{age},
+			signature = #{signature},
+			update_date = #{updateDate},
+			update_by = #{updateBy.id}
+		WHERE id = #{id}
+	</update>
+	
+	
+	<!--物理删除-->
+	<update id="delete">
+		DELETE FROM weibo_user
+		WHERE id = #{id}
+	</update>
+	
+	<!--逻辑删除-->
+	<update id="deleteByLogic">
+		UPDATE weibo_user SET 
+			del_flag = #{DEL_FLAG_DELETE}
+		WHERE id = #{id}
+	</update>
+	
+	
+	<!-- 根据实体名称和字段名称和字段值获取唯一记录 -->
+	<select id="findUniqueByProperty" resultType="WeiboUser" statementType="STATEMENT">
+		select * FROM weibo_user  where ${propertyName} = '${value}'
+	</select>
+	
+</mapper>

@@ -1,0 +1,14 @@
+<component name="ArtifactManager">
+  <artifact type="war" name="wcst_ucenter:war">
+    <output-path>$PROJECT_DIR$/target</output-path>
+    <root id="archive" name="wcst-ucenter.war">
+      <element id="artifact" artifact-name="wcst_ucenter:war exploded" />
+      <element id="directory" name="WEB-INF">
+        <element id="directory" name="lib">
+          <element id="library" level="project" name="asm-4.2" />
+          <element id="library" level="project" name="ckfinder-2.3" />
+        </element>
+      </element>
+    </root>
+  </artifact>
+</component>
